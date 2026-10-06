@@ -28,7 +28,6 @@
             -webkit-font-smoothing: antialiased; 
         }
         
-        /* Header */
         .header-card { 
             background: linear-gradient(135deg, #002855, #004080); 
             color: white; 
@@ -41,7 +40,6 @@
         .header-card h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
         .header-card p { margin: 8px 0 0; font-size: 14px; color: #a1c2ea; font-weight: 500; }
         
-        /* Cards */
         .card { 
             background: var(--card-bg); 
             border-radius: 16px; 
@@ -53,7 +51,6 @@
         .title { font-weight: 600; font-size: 17px; margin-bottom: 4px; letter-spacing: -0.3px; }
         .sub { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
         
-        /* Inputs */
         input[type="text"], select { 
             font-family: inherit; 
             font-size: 16px; 
@@ -73,7 +70,6 @@
             box-shadow: 0 0 0 3px rgba(0,122,255,0.15); 
         }
         
-        /* CSS Grid Dashboard */
         .summary-grid { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
@@ -107,12 +103,10 @@
             text-align: center;
         }
         
-        /* List Items */
         .row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-color); }
         .row:last-child { border-bottom: none; padding-bottom: 0; }
         .row:first-of-type { padding-top: 8px; }
         
-        /* Buttons */
         .control-group { display: flex; align-items: center; justify-content: space-between; background: #f0f0f5; border-radius: 20px; padding: 4px; min-width: 100px; }
         .btn { width: 36px; height: 36px; border-radius: 18px; border: none; background: transparent; color: var(--primary-blue); font-size: 22px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; padding-bottom: 3px; }
         .btn:active { background: #e0e0eb; }
@@ -121,7 +115,6 @@
         .action-btn { background: var(--primary-blue); color: white; border: none; padding: 16px; width: 100%; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-bottom: 32px; box-shadow: 0 4px 14px rgba(0,122,255,0.3); transition: transform 0.1s; }
         .action-btn:active { transform: scale(0.98); background: #005bb5; }
         
-        /* Warnings & Disclaimers */
         .warning-box { margin-top: 16px; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 500; text-align: center; line-height: 1.4; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .ok { background: #e5fbe9; color: #196b2a; border: 1px solid #cce8d3; }
         .alert { background: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
@@ -130,7 +123,6 @@
         
         .print-only { display: none; }
 
-        /* Print Layout */
         @media print {
             body { background: white; padding: 0; color: black; }
             .no-print { display: none !important; }
@@ -157,7 +149,6 @@
         <p>Water Supply, Drainage & Venting Calculator</p>
     </div>
 
-    <!-- Project Details -->
     <div class="card">
         <div class="title">Project Details</div>
         <input type="text" id="project-name" placeholder="Project Name or Address (e.g., 1117 Purdy Rd)">
@@ -173,7 +164,6 @@
         </select>
     </div>
 
-    <!-- Master Summary Dashboard -->
     <div class="card">
         <div class="title" style="text-align: center; margin-bottom: 8px;">System Sizing Report</div>
         
@@ -204,10 +194,8 @@
         <div id="status-message" class="warning-box ok"></div>
     </div>
 
-    <!-- Fixture Inputs -->
     <div class="card" id="fixture-list"></div>
 
-    <!-- Code Compliance Disclaimer -->
     <div class="card disclaimer">
         <div class="disclaimer-title">Design Assumptions & Code Compliance</div>
         <div style="margin-bottom: 8px;">Calculations are based strictly on prescriptive tables from <b>Part 7 of the Ontario Building Code (OBC)</b>: Tables 7.6.3.2.A, 7.6.3.4, 7.4.9.3, and 7.4.10.8.</div>
@@ -242,7 +230,7 @@
                 totalDFU += item.count * item.dfu;
                 if (item.count > 0 && item.toilet) hasToilet = true;
 
-                const printHideClass = item.count === 0 ? 'hide-zero-print' : '';
+                const printHideClass = item.count === 0 ? "hide-zero-print" : "";
 
                 container.innerHTML += `
                     <div class="row ${printHideClass}">
@@ -262,25 +250,21 @@
             document.getElementById("total-fu").innerText = totalFU.toFixed(1);
             document.getElementById("total-dfu").innerText = totalDFU.toFixed(1);
             
-            // Water Supply
             let waterStr = "3/4\"";
             let waterNum = 0.75;
             if (totalFU > 26 && totalFU <= 41) { waterStr = "1\""; waterNum = 1.0; } 
             else if (totalFU > 41) { waterStr = "1 1/4\""; waterNum = 1.25; }
             document.getElementById("pipe-size").innerText = waterStr;
 
-            // Drain Sizing
             let drainStr = "3\"";
             if (totalDFU > 27) { drainStr = "4\""; } 
             if (!hasToilet && totalDFU <= 6) { drainStr = "2\""; } 
             document.getElementById("drain-size").innerText = drainStr;
 
-            // Vent Sizing
             let ventStr = "2\"";
             if (hasToilet) { ventStr = "3\" (Min. Stack)"; } 
             document.getElementById("vent-size").innerText = ventStr;
 
-            // Warning Checks
             const suctionSelect = document.getElementById("suction-size");
             const suctionVal = parseFloat(suctionSelect.value);
             const suctionText = suctionSelect.options[suctionSelect.selectedIndex].text.split(" (")[0];
@@ -288,10 +272,10 @@
 
             if (suctionVal < waterNum) {
                 statusMsg.className = "warning-box alert";
-                statusMsg.innerHTML = `⚠️ <b>Bottleneck Warning:</b> Your ${suctionText} incoming supply is smaller than the required ${waterStr} house main.`;
+                statusMsg.innerHTML = "⚠️ <b>Bottleneck Warning:</b> Your " + suctionText + " incoming supply is smaller than the required " + waterStr + " house main.";
             } else {
                 statusMsg.className = "warning-box ok";
-                statusMsg.innerHTML = `✅ <b>System Valid:</b> Supply and drainage capacities conform to OBC parameters.`;
+                statusMsg.innerHTML = "✅ <b>System Valid:</b> Supply and drainage capacities conform to OBC parameters.";
             }
         }
 

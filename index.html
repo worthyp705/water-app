@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="app-icon.png">
-    <title>FlowCode</title>
+    <title>FlowCode Pro</title>
     <style>
         :root {
             --bg-color: #f4f5f7;
@@ -14,6 +14,7 @@
             --text-main: #1c1c1e;
             --text-muted: #8e8e93;
             --primary-blue: #007aff;
+            --secondary-blue: #5856d6;
             --border-color: #e5e5ea;
         }
         
@@ -26,8 +27,10 @@
             padding: 16px; 
             color: var(--text-main); 
             -webkit-font-smoothing: antialiased; 
+            padding-bottom: 40px;
         }
         
+        /* Premium Header */
         .header-card { 
             background: linear-gradient(135deg, #002855, #004080); 
             color: white; 
@@ -37,9 +40,10 @@
             text-align: center; 
             box-shadow: 0 8px 24px rgba(0,40,85,0.15); 
         }
-        .header-card h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
-        .header-card p { margin: 6px 0 0; font-size: 14px; color: #a1c2ea; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-card h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+        .header-card p { margin: 6px 0 0; font-size: 13px; color: #a1c2ea; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         
+        /* Cards */
         .card { 
             background: var(--card-bg); 
             border-radius: 16px; 
@@ -48,10 +52,11 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
             border: 1px solid rgba(0,0,0,0.02); 
         }
-        .title { font-weight: 600; font-size: 17px; margin-bottom: 4px; letter-spacing: -0.3px; }
-        .sub { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+        .title { font-weight: 700; font-size: 18px; margin-bottom: 4px; letter-spacing: -0.3px; color: #1c1c1e; }
+        .sub { font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px; }
         
-        input[type="text"], select { 
+        /* Inputs & Textareas */
+        input[type="text"], input[type="number"], select, textarea { 
             font-family: inherit; 
             font-size: 16px; 
             padding: 14px; 
@@ -59,50 +64,34 @@
             border: 1px solid #d1d1d6; 
             background: #fafafa; 
             width: 100%; 
-            margin-top: 10px; 
+            margin-top: 6px; 
+            margin-bottom: 12px;
             outline: none; 
             -webkit-appearance: none; 
             transition: all 0.2s ease; 
         }
-        input[type="text"]:focus, select:focus { 
-            border-color: var(--primary-blue); 
-            background: #fff; 
-            box-shadow: 0 0 0 3px rgba(0,122,255,0.15); 
-        }
+        textarea { resize: vertical; min-height: 80px; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary-blue); background: #fff; box-shadow: 0 0 0 3px rgba(0,122,255,0.15); }
         
-        .summary-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; 
-            margin-top: 16px; 
-        }
+        /* Grid Layouts */
+        .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; }
         .summary-box { 
             background: #f8f9fa; 
             padding: 16px 8px; 
             border-radius: 12px; 
             border: 1px solid var(--border-color); 
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
-        .val { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 2px; }
+        .val { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2px; }
+        .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; font-weight: 700; letter-spacing: 0.5px; }
+        
+        /* Colors for values */
         .fu-val { color: var(--primary-blue); }
         .dfu-val { color: #af52de; }
         .pipe-val { color: #34c759; }
         .vent-val { color: #ff9500; }
-        .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; font-weight: 700; letter-spacing: 0.5px; text-align: center; }
         
-        .vent-card {
-            background: #f8f9fa; 
-            padding: 16px; 
-            border-radius: 12px; 
-            border: 1px solid var(--border-color); 
-            margin-top: 12px;
-            text-align: center;
-        }
-        
+        /* Interactive Rows */
         .row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-color); }
         .row:last-child { border-bottom: none; padding-bottom: 0; }
         .row:first-of-type { padding-top: 8px; }
@@ -112,17 +101,20 @@
         .btn:active { background: #e0e0eb; }
         .cnt { width: 28px; text-align: center; font-size: 17px; font-weight: 600; display: inline-block; }
         
-        .action-btn { background: var(--primary-blue); color: white; border: none; padding: 16px; width: 100%; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-bottom: 32px; box-shadow: 0 4px 14px rgba(0,122,255,0.3); transition: transform 0.1s; }
+        /* Action Button */
+        .action-btn { background: var(--primary-blue); color: white; border: none; padding: 18px; width: 100%; border-radius: 14px; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 14px rgba(0,122,255,0.3); transition: transform 0.1s; }
         .action-btn:active { transform: scale(0.98); background: #005bb5; }
         
+        /* Alerts */
         .warning-box { margin-top: 16px; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 500; text-align: center; line-height: 1.4; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .ok { background: #e5fbe9; color: #196b2a; border: 1px solid #cce8d3; }
         .alert { background: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
-        .disclaimer { font-size: 13px; color: #666; line-height: 1.5; background: transparent; box-shadow: none; border: none; padding: 0 8px; margin-top: 8px; }
-        .disclaimer-title { font-weight: 700; color: #1c1c1e; margin-bottom: 6px; font-size: 14px; }
+        
+        .disclaimer { font-size: 12px; color: #666; line-height: 1.5; background: transparent; box-shadow: none; border: none; padding: 0 8px; }
         
         .print-only { display: none; }
 
+        /* Print Layout (For the PDF Generation) */
         @media print {
             body { background: white; padding: 0; color: black; }
             .no-print { display: none !important; }
@@ -133,42 +125,104 @@
             .header-card p { color: #333; }
             .card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 16px; page-break-inside: avoid; }
             .btn, select, .action-btn, .control-group { display: none !important; }
-            input[type="text"] { border: none; background: transparent; padding: 0; font-weight: bold; font-size: 18px; margin-top: 4px; box-shadow: none; }
+            input[type="text"], input[type="number"], textarea { border: none; background: transparent; padding: 0; font-weight: bold; font-size: 16px; margin-top: 0; box-shadow: none; resize: none; }
             .summary-box { background: transparent; border: 1px solid #ccc; }
-            .vent-card { background: transparent; border: 1px solid #ccc; }
             .cnt.print-only { font-size: 16px; margin-top: 8px; }
-            .cnt.print-only::before { content: "Installed Qty: "; font-weight: normal; color: #666; }
+            .cnt.print-only::before { content: "Qty: "; font-weight: normal; color: #666; }
             .warning-box { border: 1px solid #000; background: transparent; color: #000; }
-            .disclaimer { border: 1px solid #eee; padding: 12px; }
         }
     </style>
 </head>
 <body>
     
     <div class="header-card">
-        <h1>FlowCode</h1>
-        <p>OBC Plumbing & Pipe Sizer</p>
+        <h1>FlowCode Pro</h1>
+        <p>OBC Master Job-Site Suite</p>
     </div>
 
+    <!-- MODULE 1: Job Records & Worksheets -->
     <div class="card">
-        <div class="title">Project Details</div>
-        <input type="text" id="project-name" placeholder="Project Name or Address">
+        <div class="title">1. Job Worksheet & Scope</div>
+        <div class="sub no-print">Save job contacts and site notes for your final PDF export.</div>
         
-        <div style="margin-top: 20px;" class="title no-print">Incoming Water Service Line</div>
-        <div class="sub no-print">Select the main suction or well line size:</div>
-        <select id="suction-size" class="no-print" onchange="update()">
-            <option value="0.5">1/2" (NPS 1/2)</option>
-            <option value="0.75">3/4" (NPS 3/4)</option>
-            <option value="1.0">1" (NPS 1)</option>
-            <option value="1.25" selected>1 1/4" (NPS 1 1/4)</option>
-            <option value="1.5">1 1/2" (NPS 1 1/2)</option>
-            <option value="2.0">2" (NPS 2)</option>
-        </select>
+        <label class="lbl no-print">Client / Project Name</label>
+        <input type="text" id="project-name" placeholder="e.g., Smith Cottage - Purdy Rd">
+        
+        <label class="lbl no-print">Scope of Work & Site Notes</label>
+        <textarea id="job-notes" placeholder="e.g., Rough-in for 2 bathrooms, new septic tie-in, and 1 1/4 inch lake suction line..."></textarea>
     </div>
 
+    <!-- MODULE 2: Core Pipe Sizing (The Fixture Load) -->
+    <div class="card" id="fixture-list">
+        <!-- Rendered by JavaScript -->
+    </div>
+
+    <!-- MODULE 3: Property Estimates (Septic & Water Heater) -->
     <div class="card">
-        <div class="title" style="text-align: center; margin-bottom: 8px;">System Sizing Report</div>
+        <div class="title">3. Property Requirements</div>
+        <div class="sub no-print">Calculate peripheral property constraints (Septic & Hot Water).</div>
         
+        <div class="summary-grid no-print" style="margin-bottom: 12px; grid-template-columns: 1fr;">
+            <div style="text-align: left;">
+                <label class="lbl">Total Bedrooms (For Septic Sizing)</label>
+                <input type="number" id="bed-count" value="3" min="1" max="10" onchange="updateEstimates()">
+            </div>
+        </div>
+
+        <div class="summary-grid">
+            <div class="summary-box">
+                <div id="septic-size" class="val fu-val">1600</div>
+                <div class="lbl">Min. Septic Tank (L)</div>
+            </div>
+            <div class="summary-box">
+                <div id="heater-size" class="val vent-val">40</div>
+                <div class="lbl">Water Heater (Gal)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODULE 4: Pipe Volume Calculator -->
+    <div class="card">
+        <div class="title">4. Pipe Volume Calculator</div>
+        <div class="sub no-print">Estimate gallons of water held in a pipe run (useful for hot water wait times).</div>
+        
+        <div class="summary-grid no-print" style="margin-bottom: 12px;">
+            <div>
+                <label class="lbl">Pipe Size</label>
+                <select id="vol-size" onchange="updateEstimates()">
+                    <option value="0.012">1/2" PEX</option>
+                    <option value="0.023" selected>3/4" PEX</option>
+                    <option value="0.041">1" PEX</option>
+                </select>
+            </div>
+            <div>
+                <label class="lbl">Length (Feet)</label>
+                <input type="number" id="vol-length" value="50" onchange="updateEstimates()">
+            </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+            <div class="lbl" style="margin-top:0;">Total Volume in Pipe</div>
+            <div id="pipe-vol-result" class="val" style="color: var(--secondary-blue);">1.15 Gal</div>
+        </div>
+    </div>
+
+    <!-- MODULE 5: Master Code Summary -->
+    <div class="card">
+        <div class="title" style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">OBC System Sizing Report</div>
+        
+        <div style="margin-top: 16px;" class="no-print">
+            <label class="lbl">Incoming Water Service Line (Verify Bottlenecks)</label>
+            <select id="suction-size" onchange="updateCode()">
+                <option value="0.5">1/2" (NPS 1/2)</option>
+                <option value="0.75">3/4" (NPS 3/4)</option>
+                <option value="1.0">1" (NPS 1)</option>
+                <option value="1.25" selected>1 1/4" (NPS 1 1/4)</option>
+                <option value="1.5">1 1/2" (NPS 1 1/2)</option>
+                <option value="2.0">2" (NPS 2)</option>
+            </select>
+        </div>
+
         <div class="summary-grid">
             <div class="summary-box">
                 <div id="total-fu" class="val fu-val">0.0</div>
@@ -183,30 +237,27 @@
                 <div class="lbl">Drain Load (DFU)</div>
             </div>
             <div class="summary-box">
-                <div id="drain-size" class="val vent-val">3"</div>
+                <div id="drain-size" class="val pipe-val">3"</div>
                 <div class="lbl">Main Sewer (ABS)</div>
             </div>
         </div>
         
-        <div class="vent-card">
-            <div class="lbl" style="margin-top: 0; margin-bottom: 4px;">Main Vent Stack Required</div>
-            <div id="vent-size" class="val" style="color: #ff9500; font-size: 20px;">2"</div>
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; margin-top: 12px;">
+            <div class="lbl" style="margin-top: 0;">Main Vent Stack Required</div>
+            <div id="vent-size" class="val" style="color: #ff9500;">2"</div>
         </div>
 
         <div id="status-message" class="warning-box ok"></div>
     </div>
 
-    <div class="card" id="fixture-list"></div>
-
     <div class="card disclaimer">
-        <div class="disclaimer-title">Design Assumptions & Code Compliance</div>
-        <div style="margin-bottom: 8px;">Calculations are based strictly on prescriptive tables from <b>Part 7 of the Ontario Building Code (OBC)</b>: Tables 7.6.3.2.A, 7.6.3.4, 7.4.9.3, and 7.4.10.8.</div>
-        <div><b>Important Constraints:</b> Sizing limits assume standard residential water pressure (minimum <b>30 psi / 200 kPa</b>) and a main service pipe length under <b>90 meters (300 ft)</b>. Systems exceeding these parameters require a detailed engineering design.</div>
+        <div><b>OBC Compliance:</b> Code calculations based on OBC Part 7 prescriptive tables (7.6.3.2.A, 7.6.3.4, 7.4.9.3). Limits assume min 30 psi / 200 kPa pressure and runs under 90m.</div>
     </div>
 
-    <button class="action-btn no-print" onclick="window.print()">Generate PDF Report</button>
+    <button class="action-btn no-print" onclick="window.print()">Export Worksheet to PDF</button>
 
     <script>
+        // Core Fixture Data
         const fixtures = [
             { name: "Full Bath Group", desc: "Toilet, Sink, Tub/Shower", fu: 3.6, dfu: 6.0, toilet: true, count: 0 },
             { name: "Half Bath Group", desc: "Toilet & Sink Only", fu: 2.6, dfu: 5.0, toilet: true, count: 0 },
@@ -216,57 +267,78 @@
             { name: "Kitchen Sink", desc: "Standard Kitchen", fu: 1.4, dfu: 1.5, toilet: false, count: 1 },
             { name: "Clothes Washer", desc: "Laundry Box", fu: 1.4, dfu: 2.0, toilet: false, count: 0 },
             { name: "Dishwasher", desc: "Kitchen Appliance", fu: 1.4, dfu: 1.5, toilet: false, count: 0 },
-            { name: "Hose Bib", desc: "Exterior Valve (No Drain)", fu: 2.5, dfu: 0.0, toilet: false, count: 1 }
+            { name: "Hose Bib", desc: "Exterior Valve", fu: 2.5, dfu: 0.0, toilet: false, count: 1 }
         ];
 
-        function update() {
+        function initFixtures() {
+            const container = document.getElementById("fixture-list");
+            container.innerHTML = "<div class='title'>2. Fixture Calculator</div><div class='sub no-print'>Adjust counts to generate building code load data.</div>";
+            
+            fixtures.forEach((item, idx) => {
+                container.innerHTML += `
+                    <div class="row" id="row-${idx}">
+                        <div>
+                            <div class="title" style="font-size:16px;">${item.name}</div>
+                            <div class="sub" style="margin-bottom:0;">${item.desc} • ${item.fu} FU / ${item.dfu} DFU</div>
+                        </div>
+                        <div class="control-group no-print">
+                            <button class="btn" onclick="changeCount(${idx}, -1)">-</button>
+                            <span class="cnt" id="cnt-${idx}">${item.count}</span>
+                            <button class="btn" onclick="changeCount(${idx}, 1)">+</button>
+                        </div>
+                        <div class="cnt print-only" id="print-cnt-${idx}">${item.count}</div>
+                    </div>`;
+            });
+        }
+
+        function changeCount(idx, delta) {
+            fixtures[idx].count = Math.max(0, fixtures[idx].count + delta);
+            document.getElementById(`cnt-${idx}`).innerText = fixtures[idx].count;
+            document.getElementById(`print-cnt-${idx}`).innerText = fixtures[idx].count;
+            updateCode();
+            updateEstimates(); // Bathrooms impact water heater sizing
+        }
+
+        function updateCode() {
             let totalFU = 0;
             let totalDFU = 0;
             let hasToilet = false;
+            let totalBaths = 0;
 
-            const container = document.getElementById("fixture-list");
-            container.innerHTML = "<div class='title' style='margin-bottom: 4px;'>Plumbing Fixtures</div><div class='sub' style='margin-bottom: 12px;'>Adjust counts to calculate system load</div>";
-            
             fixtures.forEach((item, idx) => {
                 totalFU += item.count * item.fu;
                 totalDFU += item.count * item.dfu;
                 if (item.count > 0 && item.toilet) hasToilet = true;
-
-                const printHideClass = item.count === 0 ? "hide-zero-print" : "";
-
-                container.innerHTML += `
-                    <div class="row ${printHideClass}">
-                        <div>
-                            <div class="title">${item.name}</div>
-                            <div class="sub">${item.desc} • ${item.fu} FU / ${item.dfu} DFU</div>
-                        </div>
-                        <div class="control-group no-print">
-                            <button class="btn" onclick="change(${idx}, -1)">-</button>
-                            <span class="cnt">${item.count}</span>
-                            <button class="btn" onclick="change(${idx}, 1)">+</button>
-                        </div>
-                        <div class="cnt print-only">${item.count}</div>
-                    </div>`;
+                if (item.name.includes("Bath Group")) totalBaths += item.count;
+                
+                // Hide zero-count fixtures in print view
+                const row = document.getElementById(`row-${idx}`);
+                if (item.count === 0) { row.classList.add("hide-zero-print"); } 
+                else { row.classList.remove("hide-zero-print"); }
             });
 
             document.getElementById("total-fu").innerText = totalFU.toFixed(1);
             document.getElementById("total-dfu").innerText = totalDFU.toFixed(1);
             
+            // Code Logic: Water
             let waterStr = "3/4\"";
             let waterNum = 0.75;
             if (totalFU > 26 && totalFU <= 41) { waterStr = "1\""; waterNum = 1.0; } 
             else if (totalFU > 41) { waterStr = "1 1/4\""; waterNum = 1.25; }
             document.getElementById("pipe-size").innerText = waterStr;
 
+            // Code Logic: Drain
             let drainStr = "3\"";
             if (totalDFU > 27) { drainStr = "4\""; } 
             if (!hasToilet && totalDFU <= 6) { drainStr = "2\""; } 
             document.getElementById("drain-size").innerText = drainStr;
 
+            // Code Logic: Vent
             let ventStr = "2\"";
             if (hasToilet) { ventStr = "3\" (Min. Stack)"; } 
             document.getElementById("vent-size").innerText = ventStr;
 
+            // Suction Bottleneck Check
             const suctionSelect = document.getElementById("suction-size");
             const suctionVal = parseFloat(suctionSelect.value);
             const suctionText = suctionSelect.options[suctionSelect.selectedIndex].text.split(" (")[0];
@@ -274,19 +346,41 @@
 
             if (suctionVal < waterNum) {
                 statusMsg.className = "warning-box alert";
-                statusMsg.innerHTML = "⚠️ <b>Bottleneck Warning:</b> Your " + suctionText + " incoming supply is smaller than the required " + waterStr + " house main.";
+                statusMsg.innerHTML = "⚠️ <b>Bottleneck:</b> " + suctionText + " incoming supply is smaller than the required " + waterStr + " house main.";
             } else {
                 statusMsg.className = "warning-box ok";
                 statusMsg.innerHTML = "✅ <b>System Valid:</b> Supply and drainage capacities conform to OBC parameters.";
             }
+            
+            return totalBaths; // Pass to estimator
         }
 
-        function change(idx, delta) {
-            fixtures[idx].count = Math.max(0, fixtures[idx].count + delta);
-            update();
+        function updateEstimates() {
+            // 1. Pipe Volume Logic
+            const volFactor = parseFloat(document.getElementById("vol-size").value);
+            const length = parseFloat(document.getElementById("vol-length").value) || 0;
+            const volume = volFactor * length;
+            document.getElementById("pipe-vol-result").innerText = volume.toFixed(2) + " Gal";
+
+            // 2. Septic Sizing Logic (Rough Ontario Estimate: Base 1000L + 600L per extra bed)
+            const beds = parseInt(document.getElementById("bed-count").value) || 1;
+            let septicLiters = 1000;
+            if (beds > 1) { septicLiters += ((beds - 1) * 600); }
+            document.getElementById("septic-size").innerText = septicLiters;
+
+            // 3. Water Heater Logic (Based on Bathrooms)
+            let totalBaths = 0;
+            fixtures.forEach(item => { if(item.name.includes("Bath Group")) totalBaths += item.count; });
+            let heaterGal = 40;
+            if (totalBaths >= 2 && beds >= 3) heaterGal = 50;
+            if (totalBaths >= 3 || beds >= 5) heaterGal = 80;
+            document.getElementById("heater-size").innerText = heaterGal;
         }
 
-        update();
+        // Initialize App
+        initFixtures();
+        updateCode();
+        updateEstimates();
     </script>
 </body>
 </html>

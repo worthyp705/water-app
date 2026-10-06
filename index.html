@@ -123,30 +123,8 @@
         <p>Job Worksheet & Sizing Report</p>
     </div>
 
-    <!-- TAB 1: JOB & QUOTE -->
-    <div id="tab-quote" class="tab-content active">
-        <div class="card">
-            <div class="title">Job Details & Quote Estimator</div>
-            <input type="text" id="client-name" placeholder="Client Name & Address">
-            <textarea id="job-notes" placeholder="Scope of work & notes..."></textarea>
-            
-            <div class="grid-2 no-print">
-                <div><label class="lbl">Total Fixtures</label><input type="number" id="q-fix-count" value="0" oninput="updateQuote()"></div>
-                <div><label class="lbl">Price Per Fixture ($)</label><input type="number" id="q-fix-rate" value="350" oninput="updateQuote()"></div>
-                <div><label class="lbl">Est. Material Cost ($)</label><input type="number" id="q-mats" value="0" oninput="updateQuote()"></div>
-                <div><label class="lbl">Material Markup (%)</label><input type="number" id="q-markup" value="20" oninput="updateQuote()"></div>
-            </div>
-            <div class="box" style="margin-top: 8px;">
-                <div class="lbl" style="margin-top:0;">Estimated Project Total</div>
-                <div id="q-total" class="val" style="color: var(--success); font-size: 28px;">$0.00</div>
-            </div>
-        </div>
-        
-        <button class="action-btn no-print" onclick="window.print()">Export Report to PDF</button>
-    </div>
-
-    <!-- TAB 2: SYSTEM SIZING -->
-    <div id="tab-sizing" class="tab-content">
+    <!-- TAB 1: SYSTEM SIZING (NOW DEFAULT) -->
+    <div id="tab-sizing" class="tab-content active">
         <div class="card">
             <div class="title">OBC Load Calculator (Water & Drain)</div>
             <div id="fixture-list"></div>
@@ -180,6 +158,28 @@
 
             <!-- Bottleneck Warning -->
             <div id="status-message" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; text-align: center;"></div>
+        </div>
+        
+        <button class="action-btn no-print" onclick="window.print()">Export Report to PDF</button>
+    </div>
+
+    <!-- TAB 2: JOB & QUOTE -->
+    <div id="tab-quote" class="tab-content">
+        <div class="card">
+            <div class="title">Job Details & Quote Estimator</div>
+            <input type="text" id="client-name" placeholder="Client Name & Address">
+            <textarea id="job-notes" placeholder="Scope of work & notes..."></textarea>
+            
+            <div class="grid-2 no-print">
+                <div><label class="lbl">Total Fixtures</label><input type="number" id="q-fix-count" value="0" oninput="updateQuote()"></div>
+                <div><label class="lbl">Price Per Fixture ($)</label><input type="number" id="q-fix-rate" value="350" oninput="updateQuote()"></div>
+                <div><label class="lbl">Est. Material Cost ($)</label><input type="number" id="q-mats" value="0" oninput="updateQuote()"></div>
+                <div><label class="lbl">Material Markup (%)</label><input type="number" id="q-markup" value="20" oninput="updateQuote()"></div>
+            </div>
+            <div class="box" style="margin-top: 8px;">
+                <div class="lbl" style="margin-top:0;">Estimated Project Total</div>
+                <div id="q-total" class="val" style="color: var(--success); font-size: 28px;">$0.00</div>
+            </div>
         </div>
         
         <button class="action-btn no-print" onclick="window.print()">Export Report to PDF</button>
@@ -303,15 +303,15 @@
         </div>
     </div>
 
-    <!-- BOTTOM TAB BAR -->
+    <!-- BOTTOM TAB BAR (SWAPPED SIZING & QUOTE) -->
     <div class="bottom-nav no-print">
-        <div class="nav-item active" onclick="switchTab('tab-quote', this)">
-            <span class="nav-icon">📝</span>
-            <span>Quote</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('tab-sizing', this)">
+        <div class="nav-item active" onclick="switchTab('tab-sizing', this)">
             <span class="nav-icon">📐</span>
             <span>Sizing</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-quote', this)">
+            <span class="nav-icon">📝</span>
+            <span>Quote</span>
         </div>
         <div class="nav-item" onclick="switchTab('tab-tools', this)">
             <span class="nav-icon">🧰</span>

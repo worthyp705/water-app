@@ -191,7 +191,32 @@
             <div class="title">Job-Site Calculators</div>
             
             <details open>
-                <summary>ABS Grade / Slope Calculator</summary>
+                <summary>Septic Sizing (OBC Part 8)</summary>
+                <div style="margin-top: 12px;">
+                    <label class="lbl">Number of Bedrooms</label>
+                    <input type="number" id="septic-beds" value="3" oninput="updateTools()">
+                </div>
+                <div class="grid-2">
+                    <div class="box"><div class="lbl" style="margin-top:0;">Daily Flow (Q)</div><div id="septic-flow" class="val">1600 L</div></div>
+                    <div class="box"><div class="lbl" style="margin-top:0;">Min Tank Size</div><div id="septic-tank" class="val" style="color: var(--warning);">3600 L</div></div>
+                </div>
+            </details>
+
+            <details>
+                <summary>Well Pump (TDH) & Lift</summary>
+                <div class="grid-2" style="margin-top: 12px;">
+                    <div><label class="lbl">Vertical Lift (Ft)</label><input type="number" id="pump-lift" value="30" oninput="updateTools()"></div>
+                    <div><label class="lbl">Pipe Distance (Ft)</label><input type="number" id="pump-dist" value="100" oninput="updateTools()"></div>
+                </div>
+                <div class="box">
+                    <div id="pump-warn" class="lbl" style="margin-top:0; color: #b71c1c;">Lift > 25ft: Submersible Required</div>
+                    <div class="lbl" style="margin-top:4px;">Estimated TDH</div>
+                    <div id="pump-result" class="val">150 Ft (~1/2 HP)</div>
+                </div>
+            </details>
+
+            <details>
+                <summary>ABS Grade / Slope</summary>
                 <div class="grid-2" style="margin-top: 12px;">
                     <div>
                         <label class="lbl">ABS Pipe Size</label>
@@ -213,21 +238,12 @@
             </details>
 
             <details>
-                <summary>Offset Travel Calculator</summary>
+                <summary>Offset Travel</summary>
                 <div class="grid-2" style="margin-top: 12px;">
                     <div><label class="lbl">Fitting Angle</label><select id="off-angle" onchange="updateTools()"><option value="1.414">45°</option><option value="2.613">22.5°</option></select></div>
                     <div><label class="lbl">Offset Gap (Inches)</label><input type="number" id="off-gap" value="10" oninput="updateTools()"></div>
                 </div>
                 <div class="box"><div class="lbl" style="margin-top:0;">Cut Length (Travel)</div><div id="off-result" class="val">14.1"</div></div>
-            </details>
-
-            <details>
-                <summary>Well Pump (TDH) & Volume</summary>
-                <div class="grid-2" style="margin-top: 12px;">
-                    <div><label class="lbl">Vertical Lift (Ft)</label><input type="number" id="pump-lift" value="30" oninput="updateTools()"></div>
-                    <div><label class="lbl">Pipe Distance (Ft)</label><input type="number" id="pump-dist" value="100" oninput="updateTools()"></div>
-                </div>
-                <div class="box"><div class="lbl" style="margin-top:0;">Estimated TDH</div><div id="pump-result" class="val">150 Ft (~1/2 HP)</div></div>
             </details>
         </div>
 
@@ -244,6 +260,14 @@
     <div id="tab-ref" class="tab-content">
         <div class="card no-print">
             <div class="title">OBC Reference Guides</div>
+            <details>
+                <summary>Cottage & Rural Plumbing</summary>
+                <ul style="font-size: 13px; line-height: 1.5; padding-left: 16px; margin-top: 8px;">
+                    <li><b>Suction Lift Limits:</b> Standard jet pumps max out at 25 ft of vertical lift. Exceeding this requires a submersible pump.</li>
+                    <li><b>Winterization Grading:</b> Seasonal cottage supply lines must be graded continuously to a low-point drain valve to ensure complete gravity drain-down.</li>
+                    <li><b>Frost Protection (Bedrock):</b> Pipes unable to reach the frost line must be protected using closed-cell insulation and thermostatically controlled heat trace cable.</li>
+                </ul>
+            </details>
             <details>
                 <summary>Max Hanger / Support Spacing</summary>
                 <table><tr><th>Material</th><th>Horizontal</th><th>Vertical</th></tr>
@@ -262,7 +286,7 @@
         
         <div class="card no-print">
             <div class="title">About Code Compliance</div>
-            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom:0;">Calculations are based strictly on prescriptive tables from Part 7 of the Ontario Building Code (OBC). Limits assume standard residential water pressure (min 30 psi / 200 kPa) and main service runs under 90m.</div>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom:0;">Calculations are based strictly on prescriptive tables from Part 7 & 8 of the Ontario Building Code (OBC). Limits assume standard residential water pressure (min 30 psi / 200 kPa) and main service runs under 90m.</div>
         </div>
     </div>
 
@@ -295,7 +319,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Accurately separated Lavatory and Kitchen Sink values (OBC 7.6.3.2.A and 7.4.9.3)
         const fixtures = [
             { name: "Full Bath Group", desc: "Toilet, Lav, Tub/Shower", fu: 3.6, dfu: 6.0, toilet: true, sink: true, count: 0 },
             { name: "Half Bath Group", desc: "Toilet, Lav", fu: 2.9, dfu: 5.0, toilet: true, sink: true, count: 0 },
@@ -411,6 +434,31 @@
         }
 
         function updateTools() {
+            // Septic (OBC Part 8 Estimator)
+            const beds = parseInt(document.getElementById("septic-beds").value) || 3;
+            let flow = 1600;
+            if(beds === 1) flow = 750;
+            else if(beds === 2) flow = 1100;
+            else if(beds === 4) flow = 2000;
+            else if(beds >= 5) flow = 2500 + ((beds - 5) * 500);
+            document.getElementById("septic-flow").innerText = flow + " L";
+            document.getElementById("septic-tank").innerText = Math.max(3600, flow * 2) + " L";
+
+            // TDH & Lift Limit
+            const lift = parseFloat(document.getElementById("pump-lift").value) || 0;
+            const dist = parseFloat(document.getElementById("pump-dist").value) || 0;
+            const warn = document.getElementById("pump-warn");
+            if(lift > 25) {
+                warn.innerText = "Lift > 25ft: Submersible Req.";
+                warn.style.color = "#b71c1c";
+            } else {
+                warn.innerText = "Lift ≤ 25ft: Jet or Submersible";
+                warn.style.color = "#196b2a";
+            }
+            const tdh = lift + (dist * 0.05) + (50 * 2.31); 
+            let hp = "1/2 HP"; if(tdh > 180) hp = "3/4 HP"; if(tdh > 240) hp = "1 HP";
+            document.getElementById("pump-result").innerText = `${tdh.toFixed(0)} Ft (~${hp})`;
+
             // Slope (OBC 7.4.8.1)
             const pSize = parseFloat(document.getElementById("slope-pipe").value);
             const sLen = parseFloat(document.getElementById("slope-len").value) || 0;
@@ -422,13 +470,6 @@
             const ang = parseFloat(document.getElementById("off-angle").value);
             const gap = parseFloat(document.getElementById("off-gap").value) || 0;
             document.getElementById("off-result").innerText = (gap * ang).toFixed(1) + '"';
-
-            // TDH
-            const lift = parseFloat(document.getElementById("pump-lift").value) || 0;
-            const dist = parseFloat(document.getElementById("pump-dist").value) || 0;
-            const tdh = lift + (dist * 0.05) + (50 * 2.31); 
-            let hp = "1/2 HP"; if(tdh > 180) hp = "3/4 HP"; if(tdh > 240) hp = "1 HP";
-            document.getElementById("pump-result").innerText = `${tdh.toFixed(0)} Ft (~${hp})`;
         }
 
         initLists(); updateSystem(); updateQuote(); updateTools();

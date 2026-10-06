@@ -17,7 +17,6 @@
             --border-color: #e5e5ea;
         }
         
-        /* Universal box-sizing prevents elements from overflowing their containers */
         * { box-sizing: border-box; }
         
         body { 
@@ -99,7 +98,6 @@
         .vent-val { color: #ff9500; }
         .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; font-weight: 700; letter-spacing: 0.5px; text-align: center; }
         
-        /* Centered Vent Card */
         .vent-card {
             background: #f8f9fa; 
             padding: 16px; 
@@ -278,4 +276,31 @@
             document.getElementById("drain-size").innerText = drainStr;
 
             // Vent Sizing
-            let ventStr = "2
+            let ventStr = "2\"";
+            if (hasToilet) { ventStr = "3\" (Min. Stack)"; } 
+            document.getElementById("vent-size").innerText = ventStr;
+
+            // Warning Checks
+            const suctionSelect = document.getElementById("suction-size");
+            const suctionVal = parseFloat(suctionSelect.value);
+            const suctionText = suctionSelect.options[suctionSelect.selectedIndex].text.split(" (")[0];
+            const statusMsg = document.getElementById("status-message");
+
+            if (suctionVal < waterNum) {
+                statusMsg.className = "warning-box alert";
+                statusMsg.innerHTML = `⚠️ <b>Bottleneck Warning:</b> Your ${suctionText} incoming supply is smaller than the required ${waterStr} house main.`;
+            } else {
+                statusMsg.className = "warning-box ok";
+                statusMsg.innerHTML = `✅ <b>System Valid:</b> Supply and drainage capacities conform to OBC parameters.`;
+            }
+        }
+
+        function change(idx, delta) {
+            fixtures[idx].count = Math.max(0, fixtures[idx].count + delta);
+            update();
+        }
+
+        update();
+    </script>
+</body>
+</html>

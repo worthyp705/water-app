@@ -26,7 +26,6 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background: var(--bg-color); 
             margin: 0; padding: 16px; padding-top: env(safe-area-inset-top);
-            /* Add padding to the bottom so scrolling clears the tab bar */
             padding-bottom: calc(80px + env(safe-area-inset-bottom)); 
             color: var(--text-main); 
             -webkit-font-smoothing: antialiased; 
@@ -69,21 +68,17 @@
         th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
         th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; }
 
-        /* TABS LOGIC */
         .tab-content { display: none; animation: fadeIn 0.2s ease-in-out; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* BOTTOM NAVIGATION BAR */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border-top: 1px solid rgba(0,0,0,0.1);
             display: flex; justify-content: space-around;
-            padding-bottom: env(safe-area-inset-bottom);
-            z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom); z-index: 1000;
         }
         .nav-item {
             flex: 1; padding: 12px 0 8px 0; text-align: center;
@@ -96,14 +91,13 @@
 
         .print-only { display: none; }
 
-        /* PRINT / PDF GENERATOR LAYOUT */
         @media print {
             body { background: white; padding: 0; color: black; }
             .no-print { display: none !important; }
             .print-only { display: block !important; margin: 0; }
             .hide-zero-print { display: none !important; }
-            .bottom-nav { display: none !important; } /* Hide the tab bar on PDF */
-            .tab-content { display: block !important; } /* Force all tabs to show up on the PDF */
+            .bottom-nav { display: none !important; } 
+            .tab-content { display: block !important; } 
             
             .header-card { background: white; color: black; box-shadow: none; border-bottom: 2px solid #000; border-radius: 0; padding: 0 0 16px 0; }
             .header-card h1 { font-size: 28px; }
@@ -124,7 +118,7 @@
         <p>Master Plumbing & Estimating Suite</p>
     </div>
 
-    <!-- Print-Only Header for PDF -->
+    <!-- Print Header -->
     <div class="header-card print-only">
         <h1>FlowCode Pro Estimate</h1>
         <p>Job Worksheet & Sizing Report</p>
@@ -138,10 +132,10 @@
             <textarea id="job-notes" placeholder="Scope of work & notes..."></textarea>
             
             <div class="grid-2 no-print">
-                <div><label class="lbl">Est. Hours</label><input type="number" id="q-hours" value="0" oninput="updateQuote()"></div>
-                <div><label class="lbl">Hourly Rate ($)</label><input type="number" id="q-rate" value="120" oninput="updateQuote()"></div>
-                <div><label class="lbl">Material Cost ($)</label><input type="number" id="q-mats" value="0" oninput="updateQuote()"></div>
-                <div><label class="lbl">Markup (%)</label><input type="number" id="q-markup" value="20" oninput="updateQuote()"></div>
+                <div><label class="lbl">Total Fixtures</label><input type="number" id="q-fix-count" value="0" oninput="updateQuote()"></div>
+                <div><label class="lbl">Price Per Fixture ($)</label><input type="number" id="q-fix-rate" value="350" oninput="updateQuote()"></div>
+                <div><label class="lbl">Est. Material Cost ($)</label><input type="number" id="q-mats" value="0" oninput="updateQuote()"></div>
+                <div><label class="lbl">Material Markup (%)</label><input type="number" id="q-markup" value="20" oninput="updateQuote()"></div>
             </div>
             <div class="box" style="margin-top: 8px;">
                 <div class="lbl" style="margin-top:0;">Estimated Project Total</div>
@@ -157,15 +151,6 @@
         <div class="card">
             <div class="title">OBC Load Calculator (Water & Drain)</div>
             <div id="fixture-list"></div>
-        </div>
-
-        <div class="card no-print">
-            <div class="title">Gas Fitting Load (BTU)</div>
-            <div id="gas-list"></div>
-            <div class="box" style="margin-top: 12px;">
-                <div class="lbl" style="margin-top:0;">Total Gas Load Required</div>
-                <div id="total-btu" class="val" style="color: var(--warning);">0 BTU</div>
-            </div>
         </div>
 
         <div class="card">
@@ -297,23 +282,14 @@
     </div>
 
     <script>
-        // Tab Navigation Logic
         function switchTab(tabId, element) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            // Remove active state from all buttons
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            
-            // Show selected tab
             document.getElementById(tabId).classList.add('active');
-            // Highlight selected button
             element.classList.add('active');
-            
-            // Scroll to top cleanly
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- ALL PREVIOUS JAVASCRIPT LOGIC REMAINS THE SAME ---
         const fixtures = [
             { name: "Full Bath", fu: 3.6, dfu: 6.0, toilet: true, sink: true, count: 0 },
             { name: "Half Bath", fu: 2.6, dfu: 5.0, toilet: true, sink: true, count: 0 },
@@ -324,63 +300,49 @@
             { name: "Hose Bib", fu: 2.5, dfu: 0.0, toilet: false, sink: false, count: 0 }
         ];
 
-        const gas = [
-            { name: "Furnace (Typical)", btu: 80000, count: 0 },
-            { name: "Water Heater", btu: 40000, count: 0 },
-            { name: "Gas Range", btu: 65000, count: 0 },
-            { name: "BBQ Hookup", btu: 50000, count: 0 }
-        ];
-
         function initLists() {
             const fList = document.getElementById("fixture-list");
-            fixtures.forEach((f, i) => fList.innerHTML += buildRow(f.name, `fu-${i}`, i, 'fixtures'));
-            
-            const gList = document.getElementById("gas-list");
-            gas.forEach((g, i) => gList.innerHTML += buildRow(g.name, `gas-${i}`, i, 'gas'));
+            fixtures.forEach((f, idx) => {
+                fList.innerHTML += `<div class="row hide-zero-print" id="row-${idx}">
+                    <div style="font-weight:600; font-size:15px;">${f.name}</div>
+                    <div class="control-group no-print">
+                        <button class="btn" onclick="chg(${idx}, -1)">-</button>
+                        <span class="cnt" id="cnt-${idx}">0</span>
+                        <button class="btn" onclick="chg(${idx}, 1)">+</button>
+                    </div>
+                    <div class="cnt print-only" id="prt-${idx}">0</div>
+                </div>`;
+            });
         }
 
-        function buildRow(name, id, idx, type) {
-            return `<div class="row hide-zero-print" id="row-${id}">
-                <div style="font-weight:600; font-size:15px;">${name}</div>
-                <div class="control-group no-print">
-                    <button class="btn" onclick="chg('${type}', ${idx}, -1)">-</button>
-                    <span class="cnt" id="cnt-${id}">0</span>
-                    <button class="btn" onclick="chg('${type}', ${idx}, 1)">+</button>
-                </div>
-                <div class="cnt print-only" id="prt-${id}">0</div>
-            </div>`;
-        }
-
-        function chg(type, idx, delta) {
-            const arr = type === 'fixtures' ? fixtures : gas;
-            arr[idx].count = Math.max(0, arr[idx].count + delta);
-            document.getElementById(`cnt-${type}-${idx}`).innerText = arr[idx].count;
-            document.getElementById(`prt-${type}-${idx}`).innerText = arr[idx].count;
+        function chg(idx, delta) {
+            fixtures[idx].count = Math.max(0, fixtures[idx].count + delta);
+            document.getElementById(`cnt-${idx}`).innerText = fixtures[idx].count;
+            document.getElementById(`prt-${idx}`).innerText = fixtures[idx].count;
             
-            const row = document.getElementById(`row-${type}-${idx}`);
-            if(arr[idx].count > 0) row.classList.remove("hide-zero-print");
+            const row = document.getElementById(`row-${idx}`);
+            if(fixtures[idx].count > 0) row.classList.remove("hide-zero-print");
             else row.classList.add("hide-zero-print");
 
             updateSystem();
         }
 
         function updateSystem() {
-            let tFU = 0, tDFU = 0, tBTU = 0, tToilet = 0, tSink = 0;
+            let tFU = 0, tDFU = 0, tToilet = 0, tSink = 0, totalFix = 0;
             let hasToilet = false;
 
             fixtures.forEach(f => {
                 tFU += f.count * f.fu;
                 tDFU += f.count * f.dfu;
+                totalFix += f.count;
                 if (f.count > 0 && f.toilet) hasToilet = true;
                 if (f.toilet) tToilet += f.count;
                 if (f.sink) tSink += f.count;
             });
-            
-            gas.forEach(g => tBTU += g.count * g.btu);
 
+            // Update Sizing Text
             document.getElementById("out-fu").innerText = tFU.toFixed(1);
             document.getElementById("out-dfu").innerText = tDFU.toFixed(1);
-            document.getElementById("total-btu").innerText = tBTU.toLocaleString() + " BTU";
 
             let wMain = "3/4\""; if(tFU > 26) wMain = "1\""; if(tFU > 41) wMain = "1 1/4\"";
             document.getElementById("out-water").innerText = wMain;
@@ -389,22 +351,25 @@
             document.getElementById("out-drain").innerText = dMain;
             document.getElementById("out-vent").innerText = hasToilet ? "3\"" : "2\"";
 
-            // Shopping List
+            // Update Shopping List
             let shopHTML = "";
             if(tToilet > 0) shopHTML += `<li>${tToilet}x Closet Flanges (3" or 4")</li><li>${tToilet}x Wax Rings & Bolt Sets</li><li>${tToilet}x 1/2" Angle Stops</li>`;
             if(tSink > 0) shopHTML += `<li>${tSink}x 1.5" P-Traps</li><li>${tSink * 2}x 1/2" Angle Stops (Hot/Cold)</li>`;
             if(tDFU > 0) shopHTML += `<li>ABS Glue & Primer</li><li>PEX Crimps/Expansion Rings</li>`;
-            
             document.getElementById("shopping-list").innerHTML = shopHTML || "<li>No fixtures added.</li>";
+
+            // Auto-update total fixtures in the Quote tab
+            document.getElementById("q-fix-count").value = totalFix;
+            updateQuote();
         }
 
         function updateQuote() {
-            const h = parseFloat(document.getElementById("q-hours").value) || 0;
-            const r = parseFloat(document.getElementById("q-rate").value) || 0;
+            const fCount = parseFloat(document.getElementById("q-fix-count").value) || 0;
+            const fRate = parseFloat(document.getElementById("q-fix-rate").value) || 0;
             const m = parseFloat(document.getElementById("q-mats").value) || 0;
             const mk = parseFloat(document.getElementById("q-markup").value) || 0;
             
-            const total = (h * r) + (m * (1 + (mk/100)));
+            const total = (fCount * fRate) + (m * (1 + (mk/100)));
             document.getElementById("q-total").innerText = "$" + total.toFixed(2);
         }
 

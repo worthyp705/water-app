@@ -31,7 +31,9 @@
         .ok { background: #e5fbe9; color: #1e8334; }
         .alert { background: #ffebee; color: #d32f2f; }
         .control-group { display: flex; align-items: center; }
-        .action-btn { background: #007aff; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .action-btn { background: #007aff; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px; margin-bottom: 24px; }
+        .disclaimer { font-size: 12px; color: #666; line-height: 1.5; }
+        .disclaimer-title { font-weight: bold; color: #d32f2f; margin-bottom: 6px; font-size: 13px; }
         
         /* Print Styles for PDF Generation */
         @media print {
@@ -102,6 +104,14 @@
 
     <!-- Fixture Inputs -->
     <div class="card" id="fixture-list"></div>
+
+    <!-- Code Compliance Disclaimer -->
+    <div class="card disclaimer">
+        <div class="disclaimer-title">Design Assumptions & Code Compliance</div>
+        <div>Calculations are based strictly on prescriptive tables from <b>Part 7 of the Ontario Building Code (OBC)</b>: Tables 7.6.3.2.A, 7.6.3.4, 7.4.9.3, and 7.4.10.8.</div>
+        <br>
+        <div><b>Important Constraints:</b> Sizing limits assume standard residential water pressure (minimum <b>30 psi / 200 kPa</b>) and a main service pipe length under <b>90 meters (300 ft)</b>. Systems exceeding these distances or operating below 30 psi require a detailed engineering design and cannot rely on standard prescriptive sizing.</div>
+    </div>
 
     <button class="action-btn no-print" onclick="window.print()">Generate PDF Report</button>
 

@@ -191,6 +191,19 @@
             <div class="title">Job-Site Calculators</div>
             
             <details open>
+                <summary>Water Heater Sizing (ASHRAE)</summary>
+                <div class="grid-2" style="margin-top: 12px;">
+                    <div><label class="lbl">Bedrooms</label><input type="number" id="wh-beds" value="3" oninput="updateTools()"></div>
+                    <div><label class="lbl">Bathrooms</label><input type="number" id="wh-baths" value="2" oninput="updateTools()"></div>
+                </div>
+                <div class="box">
+                    <div id="wh-rule" class="lbl" style="margin-bottom:4px; font-weight:600; color: var(--text-main);">Industry Standard Guidelines</div>
+                    <div class="lbl" style="margin-top:0;">Recommended Tank Size</div>
+                    <div id="wh-result" class="val" style="color: var(--warning);">50 Gal</div>
+                </div>
+            </details>
+
+            <details>
                 <summary>Septic Sizing (OBC Part 8)</summary>
                 <div style="margin-top: 12px;">
                     <label class="lbl">Number of Bedrooms</label>
@@ -198,7 +211,7 @@
                 </div>
                 <div class="grid-2">
                     <div class="box"><div class="lbl" style="margin-top:0;">Daily Flow (Q)</div><div id="septic-flow" class="val">1600 L</div></div>
-                    <div class="box"><div class="lbl" style="margin-top:0;">Min Tank Size</div><div id="septic-tank" class="val" style="color: var(--warning);">3600 L</div></div>
+                    <div class="box"><div class="lbl" style="margin-top:0;">Min Tank Size</div><div id="septic-tank" class="val">3600 L</div></div>
                 </div>
             </details>
 
@@ -209,7 +222,7 @@
                     <div><label class="lbl">Pipe Distance (Ft)</label><input type="number" id="pump-dist" value="100" oninput="updateTools()"></div>
                 </div>
                 <div class="box">
-                    <div id="pump-warn" class="lbl" style="margin-top:0; color: #b71c1c;">Lift > 25ft: Submersible Required</div>
+                    <div id="pump-warn" class="lbl" style="margin-top:0; color: #b71c1c;">Lift > 25ft: Submersible Req.</div>
                     <div class="lbl" style="margin-top:4px;">Estimated TDH</div>
                     <div id="pump-result" class="val">150 Ft (~1/2 HP)</div>
                 </div>
@@ -286,7 +299,7 @@
         
         <div class="card no-print">
             <div class="title">About Code Compliance</div>
-            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom:0;">Calculations are based strictly on prescriptive tables from Part 7 & 8 of the Ontario Building Code (OBC). Limits assume standard residential water pressure (min 30 psi / 200 kPa) and main service runs under 90m.</div>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom:0;">System calculations are based strictly on prescriptive tables from Part 7 & 8 of the Ontario Building Code (OBC). Water heater sizing is based on ASHRAE First Hour Rating industry standards. Limits assume standard residential water pressure (min 30 psi) and runs under 90m.</div>
         </div>
     </div>
 
@@ -377,7 +390,7 @@
             document.getElementById("out-fu").innerText = tFU.toFixed(1);
             document.getElementById("out-dfu").innerText = tDFU.toFixed(1);
 
-            // Water Sizing Logic (Table 7.6.3.4)
+            // Water Sizing
             let wMain = "3/4\""; let wNum = 0.75;
             if(tFU > 26) { wMain = "1\""; wNum = 1.0; }
             if(tFU > 31) { wMain = "1 1/4\""; wNum = 1.25; }
@@ -385,7 +398,7 @@
             if(tFU > 108) { wMain = "2\""; wNum = 2.0; }
             document.getElementById("out-water").innerText = wMain;
 
-            // Drain Sizing Logic (Table 7.4.10.8)
+            // Drain Sizing
             let dMain = "3\""; 
             if(tDFU > 27) dMain = "4\""; 
             if(tDFU > 180) dMain = "6\""; 
@@ -434,7 +447,17 @@
         }
 
         function updateTools() {
-            // Septic (OBC Part 8 Estimator)
+            // Water Heater Sizing (ASHRAE)
+            const whBeds = parseInt(document.getElementById("wh-beds").value) || 1;
+            const whBaths = parseFloat(document.getElementById("wh-baths").value) || 1;
+            let gal = 40;
+            if (whBeds <= 2) { gal = whBaths >= 2 ? 50 : 40; }
+            else if (whBeds === 3) { gal = whBaths >= 3 ? 60 : 50; }
+            else if (whBeds === 4) { gal = whBaths >= 3 ? 80 : 60; }
+            else if (whBeds >= 5) { gal = 80; }
+            document.getElementById("wh-result").innerText = gal + " Gal";
+
+            // Septic (OBC Part 8)
             const beds = parseInt(document.getElementById("septic-beds").value) || 3;
             let flow = 1600;
             if(beds === 1) flow = 750;

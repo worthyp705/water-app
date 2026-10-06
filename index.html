@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Water Pipe Sizer</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f2f2f7; margin: 0; padding: 16px; color: #000; }
+        .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .summary-grid { display: flex; justify-content: space-around; text-align: center; margin-top: 8px; }
+        .val { font-size: 26px; font-weight: bold; }
+        .fu-val { color: #007aff; }
+        .pipe-val { color: #34c759; }
+        .lbl { font-size: 11px; color: #8e8e93; text-transform: uppercase; margin-top: 4px; font-weight: 600; }
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e5e5ea; }
+        .row:last-child { border-bottom: none; }
+        .title { font-weight: 500; font-size: 16px; margin-bottom: 2px; }
+        .sub { font-size: 12px; color: #8e8e93; }
+        .btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #007aff; background: #fff; color: #007aff; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding-bottom: 3px; box-sizing: border-box; }
+        .cnt { width: 26px; text-align: center; font-size: 16px; font-weight: 600; display: inline-block; }
+        select { font-size: 16px; padding: 8px; border-radius: 8px; border: 1px solid #c7c7cc; background: #f2f2f7; width: 100%; margin-top: 8px; outline: none; -webkit-appearance: none; appearance: none; }
+        .warning-box { margin-top: 16px; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; text-align: center; }
+        .ok { background: #e5fbe9; color: #1e8334; }
+        .alert { background: #ffebee; color: #d32f2f; }
+        .control-group { display: flex; align-items: center; }
+    </style>
+</head>
+<body>
+    
+    <div class="card">
+        <div class="title">Incoming Water Supply</div>
+        <div class="sub">Select your lake suction or well main line size:</div>
+        <select id="suction-size" onchange="update()">
+            <option value="0.75">3/4" (NPS 3/4)</option>
+            <option value="1.0">1" (NPS 1)</option>
+            <option value="1.25" selected>1 1/4" (NPS 1 1/4)</option>
+            <option value="1.5">1 1/2" (NPS 1 1/2)</option>
+            <option value="2.0">2" (NPS 2)</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <div class="lbl" style="text-align:center;">OBC Hydraulic Load Summary</div>
+        <div class="summary-grid">
+            <div><div id="total-fu" class="val fu-val">0.0</div><div class="lbl">Total Fixture Units</div></div>
+            <div style="border-right: 1px solid #e5e5ea;"></div>
+            <div><div id="pipe-size" class="val pipe-val">3/4"</div><div class="lbl">Required Inside Size</div></div>
+        </div>
+        <div id="status-message" class="warning-box ok"></div>
+    </div>
+
+    <div class="card" id="fixture-list"></div>
+
+    <script>
+        const fixtures = [
+            { name: "Full Bathroom Group", desc: "Toilet, Sink & Tub/Shower", fu: 3.6, count: 0 },
+            { name: "Toilet (≤ 6 LPF)", desc: "Individual", fu: 2.2, count: 1 },
+            { name: "Bathtub or Shower", desc: "Individual", fu: 1.4, count: 1 },
+            { name: "Bathroom Sink", desc: "Individual (Lavatory)", fu: 0.7, count: 1 },
+            { name: "Kitchen Sink", desc: "Standard", fu: 1.4, count: 1 },
+            { name: "Clothes Washer", desc: "Laundry", fu: 1.4, count: 0 },
+            { name: "Dishwasher", desc: "Kitchen", fu: 1.4, count: 0 },
+            { name: "Hose Bibb", desc: "Exterior Valve", fu: 2.5, count: 1 }
+        ];
+
+        function update() {
+            let total = 0;
+            const container = document.getElementById("fixture-list");
+            container.innerHTML = "";
+            
+            fixtures.forEach((item, idx) => {
+                total += item.count * item.fu;
+                container.innerHTML += `
+                    <div class="row">
+                        <div>
+                            <div class="title">${item.name}</div>
+                            <div class="sub">${item.desc} • ${item.fu} FU</div>
+                        </div>
+                        <div class="control-group">
+                            <button class="btn" onclick="change(${idx}, -1)">-</button>
+                            <span class="cnt">${item.count}</span>
+                            <button class="btn" onclick="change(${idx}, 1)">+</button>
+                        </div>
+                    </div>`;
+            });
+
+            document.getElementById("total-fu").innerText = total.toFixed(1);
+            
+            let requiredStr = "3/4\"";
+            let requiredNum = 0.75;
+            
+            if (total > 26 && total <= 41) { 
+                requiredStr = "1\""; 
+                requiredNum = 1.0; 
+            } else if (total > 41) { 
+                requiredStr = "1 1/4\""; 
+                requiredNum = 1.25; 
+            }
+
+            document.getElementById("pipe-size").innerText = requiredStr;
+
+            const suctionSelect = document.getElementById("suction-size");
+            const suctionVal = parseFloat(suctionSelect.value);
+            const suctionText = suctionSelect.options[suctionSelect.selectedIndex].text.split(" ")[0];
+            const statusMsg = document.getElementById("status-message");
+
+            if (suctionVal < requiredNum) {
+                statusMsg.className = "warning-box alert";
+                statusMsg.innerHTML = `⚠️ Bottleneck Warning: Your ${suctionText} incoming supply line is smaller than the required ${requiredStr} house main.`;
+            } else {
+                statusMsg.className = "warning-box ok";
+                statusMsg.innerHTML = `✅ All good. Your ${suctionText} supply line meets or exceeds the required capacity.`;
+            }
+        }
+
+        function change(idx, delta) {
+            fixtures[idx].count = Math.max(0, fixtures[idx].count + delta);
+            update();
+        }
+
+        update();
+    </script>
+</body>
+</html>

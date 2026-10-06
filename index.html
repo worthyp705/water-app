@@ -52,7 +52,6 @@
         
         .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
         .row:last-child { border-bottom: none; }
-        .sub { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
         
         .control-group { display: flex; align-items: center; justify-content: space-between; background: #f0f0f5; border-radius: 20px; padding: 4px; min-width: 100px; }
         .btn { width: 32px; height: 32px; border-radius: 16px; border: none; background: transparent; color: var(--primary-blue); font-size: 20px; font-weight: 500; cursor: pointer; }
@@ -171,10 +170,16 @@
                 <div class="box"><div id="out-dfu" class="val" style="color: #af52de;">0.0</div><div class="lbl">Drain Load (DFU)</div></div>
                 <div class="box"><div id="out-drain" class="val" style="color: #af52de;">3"</div><div class="lbl">Main Sewer (ABS)</div></div>
             </div>
-            <div class="box" style="margin-top: 12px;">
-                <div class="lbl" style="margin-top:0;">Main Vent Stack Required</div>
-                <div id="out-vent" class="val" style="color: var(--warning);">2"</div>
+            
+            <div class="grid-2" style="margin-top: 12px;">
+                <div class="box" style="grid-column: span 2;">
+                    <div class="lbl" style="margin-top:0;">Main Vent Stack Required</div>
+                    <div id="out-vent" class="val" style="color: var(--warning);">2"</div>
+                </div>
             </div>
+
+            <!-- Bottleneck Warning -->
+            <div id="status-message" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; text-align: center;"></div>
         </div>
         
         <button class="action-btn no-print" onclick="window.print()">Export Report to PDF</button>
@@ -201,7 +206,7 @@
                     <div><label class="lbl">Run Length (Feet)</label><input type="number" id="slope-len" value="20" oninput="updateTools()"></div>
                 </div>
                 <div class="box">
-                    <div id="slope-rule" class="sub" style="margin-bottom:4px; font-weight:600;">OBC Req: 1/4" Fall per Foot</div>
+                    <div id="slope-rule" class="lbl" style="margin-bottom:4px; font-weight:600; color: var(--text-main);">OBC Req: 1/4" Fall per Foot</div>
                     <div class="lbl" style="margin-top:0;">Total Fall Required</div>
                     <div id="slope-result" class="val">5.0"</div>
                 </div>
@@ -228,7 +233,7 @@
 
         <div class="card">
             <div class="title">Auto-Generated Material List</div>
-            <div class="sub no-print">Automatically built from your Sizing tab fixture counts.</div>
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;" class="no-print">Automatically built from your Sizing tab fixture counts.</div>
             <ul id="shopping-list" style="font-size: 15px; color: var(--text-main); line-height: 1.6; margin-top: 0; padding-left: 20px;">
                 <li>No fixtures added yet.</li>
             </ul>
@@ -257,7 +262,7 @@
         
         <div class="card no-print">
             <div class="title">About Code Compliance</div>
-            <div class="sub" style="margin-bottom:0;">Calculations are based strictly on prescriptive tables from Part 7 of the Ontario Building Code (OBC). Limits assume standard residential water pressure (min 30 psi) and main service runs under 90m.</div>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom:0;">Calculations are based strictly on prescriptive tables from Part 7 of the Ontario Building Code (OBC). Limits assume standard residential water pressure (min 30 psi / 200 kPa) and main service runs under 90m.</div>
         </div>
     </div>
 
@@ -290,21 +295,27 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Accurately separated Lavatory and Kitchen Sink values (OBC 7.6.3.2.A and 7.4.9.3)
         const fixtures = [
-            { name: "Full Bath", fu: 3.6, dfu: 6.0, toilet: true, sink: true, count: 0 },
-            { name: "Half Bath", fu: 2.6, dfu: 5.0, toilet: true, sink: true, count: 0 },
-            { name: "Toilet", fu: 2.2, dfu: 4.0, toilet: true, sink: false, count: 0 },
-            { name: "Tub/Shower", fu: 1.4, dfu: 1.5, toilet: false, sink: false, count: 0 },
-            { name: "Sink (Lav/Kit)", fu: 1.4, dfu: 1.5, toilet: false, sink: true, count: 0 },
-            { name: "Clothes Washer", fu: 1.4, dfu: 2.0, toilet: false, sink: false, count: 0 },
-            { name: "Hose Bib", fu: 2.5, dfu: 0.0, toilet: false, sink: false, count: 0 }
+            { name: "Full Bath Group", desc: "Toilet, Lav, Tub/Shower", fu: 3.6, dfu: 6.0, toilet: true, sink: true, count: 0 },
+            { name: "Half Bath Group", desc: "Toilet, Lav", fu: 2.9, dfu: 5.0, toilet: true, sink: true, count: 0 },
+            { name: "Toilet (Tank)", desc: "≤ 6 LPF", fu: 2.2, dfu: 4.0, toilet: true, sink: false, count: 0 },
+            { name: "Bathtub or Shower", desc: "Individual", fu: 1.4, dfu: 1.5, toilet: false, sink: false, count: 0 },
+            { name: "Bathroom Sink (Lavatory)", desc: "8 L/min or less", fu: 0.7, dfu: 1.0, toilet: false, sink: true, count: 0 },
+            { name: "Kitchen Sink", desc: "Domestic", fu: 1.4, dfu: 1.5, toilet: false, sink: true, count: 0 },
+            { name: "Clothes Washer", desc: "Domestic", fu: 1.4, dfu: 1.5, toilet: false, sink: false, count: 0 },
+            { name: "Dishwasher", desc: "Domestic", fu: 1.4, dfu: 1.0, toilet: false, sink: false, count: 0 },
+            { name: "Hose Bibb", desc: "Non-Draining", fu: 2.5, dfu: 0.0, toilet: false, sink: false, count: 0 }
         ];
 
         function initLists() {
             const fList = document.getElementById("fixture-list");
             fixtures.forEach((f, idx) => {
                 fList.innerHTML += `<div class="row hide-zero-print" id="row-${idx}">
-                    <div style="font-weight:600; font-size:15px;">${f.name}</div>
+                    <div>
+                        <div style="font-weight:600; font-size:15px; color: #1c1c1e;">${f.name}</div>
+                        <div style="font-size:12px; color: #8e8e93; margin-top:2px;">${f.desc} • ${f.fu} FU / ${f.dfu} DFU</div>
+                    </div>
                     <div class="control-group no-print">
                         <button class="btn" onclick="chg(${idx}, -1)">-</button>
                         <span class="cnt" id="cnt-${idx}">0</span>
@@ -340,25 +351,51 @@
                 if (f.sink) tSink += f.count;
             });
 
-            // Update Sizing Text
             document.getElementById("out-fu").innerText = tFU.toFixed(1);
             document.getElementById("out-dfu").innerText = tDFU.toFixed(1);
 
-            let wMain = "3/4\""; if(tFU > 26) wMain = "1\""; if(tFU > 41) wMain = "1 1/4\"";
+            // Water Sizing Logic (Table 7.6.3.4)
+            let wMain = "3/4\""; let wNum = 0.75;
+            if(tFU > 26) { wMain = "1\""; wNum = 1.0; }
+            if(tFU > 31) { wMain = "1 1/4\""; wNum = 1.25; }
+            if(tFU > 57) { wMain = "1 1/2\""; wNum = 1.5; }
+            if(tFU > 108) { wMain = "2\""; wNum = 2.0; }
             document.getElementById("out-water").innerText = wMain;
 
-            let dMain = "3\""; if(tDFU > 27) dMain = "4\""; if(!hasToilet && tDFU <= 6) dMain = "2\"";
+            // Drain Sizing Logic (Table 7.4.10.8)
+            let dMain = "3\""; 
+            if(tDFU > 27) dMain = "4\""; 
+            if(tDFU > 180) dMain = "6\""; 
+            if(!hasToilet && tDFU <= 6) dMain = "2\"";
+            if(!hasToilet && tDFU <= 3) dMain = "1 1/2\"";
             document.getElementById("out-drain").innerText = dMain;
             document.getElementById("out-vent").innerText = hasToilet ? "3\"" : "2\"";
 
-            // Update Shopping List
+            // Warning Banner
+            const suctionSelect = document.getElementById("suction-size");
+            const suctionVal = parseFloat(suctionSelect.value);
+            const statusMsg = document.getElementById("status-message");
+
+            if (suctionVal < wNum) {
+                statusMsg.style.background = "#ffebee";
+                statusMsg.style.color = "#b71c1c";
+                statusMsg.style.border = "1px solid #ffcdd2";
+                statusMsg.innerHTML = "⚠️ <b>Warning:</b> Incoming service line is too small for the required house main.";
+            } else {
+                statusMsg.style.background = "#e5fbe9";
+                statusMsg.style.color = "#196b2a";
+                statusMsg.style.border = "1px solid #cce8d3";
+                statusMsg.innerHTML = "✅ <b>System Valid:</b> Supply size meets OBC minimums.";
+            }
+
+            // Material List Generator
             let shopHTML = "";
             if(tToilet > 0) shopHTML += `<li>${tToilet}x Closet Flanges (3" or 4")</li><li>${tToilet}x Wax Rings & Bolt Sets</li><li>${tToilet}x 1/2" Angle Stops</li>`;
             if(tSink > 0) shopHTML += `<li>${tSink}x 1.5" P-Traps</li><li>${tSink * 2}x 1/2" Angle Stops (Hot/Cold)</li>`;
             if(tDFU > 0) shopHTML += `<li>ABS Glue & Primer</li><li>PEX Crimps/Expansion Rings</li>`;
             document.getElementById("shopping-list").innerHTML = shopHTML || "<li>No fixtures added.</li>";
 
-            // Auto-update total fixtures in the Quote tab
+            // Update Quote Total Fixtures
             document.getElementById("q-fix-count").value = totalFix;
             updateQuote();
         }
@@ -374,7 +411,7 @@
         }
 
         function updateTools() {
-            // Slope 
+            // Slope (OBC 7.4.8.1)
             const pSize = parseFloat(document.getElementById("slope-pipe").value);
             const sLen = parseFloat(document.getElementById("slope-len").value) || 0;
             let fallReq = pSize >= 4 ? 0.125 : 0.25;

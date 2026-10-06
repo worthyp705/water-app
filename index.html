@@ -151,11 +151,12 @@
 
     <div class="card">
         <div class="title">Project Details</div>
-        <input type="text" id="project-name" placeholder="Project Name or Address (e.g., 1117 Purdy Rd)">
+        <input type="text" id="project-name" placeholder="Project Name or Address">
         
         <div style="margin-top: 20px;" class="title no-print">Incoming Water Service Line</div>
         <div class="sub no-print">Select the main suction or well line size:</div>
         <select id="suction-size" class="no-print" onchange="update()">
+            <option value="0.5">1/2" (NPS 1/2)</option>
             <option value="0.75">3/4" (NPS 3/4)</option>
             <option value="1.0">1" (NPS 1)</option>
             <option value="1.25" selected>1 1/4" (NPS 1 1/4)</option>
@@ -214,7 +215,7 @@
             { name: "Kitchen Sink", desc: "Standard Kitchen", fu: 1.4, dfu: 1.5, toilet: false, count: 1 },
             { name: "Clothes Washer", desc: "Laundry Box", fu: 1.4, dfu: 2.0, toilet: false, count: 0 },
             { name: "Dishwasher", desc: "Kitchen Appliance", fu: 1.4, dfu: 1.5, toilet: false, count: 0 },
-            { name: "Hose Bibb", desc: "Exterior Valve (No Drain)", fu: 2.5, dfu: 0.0, toilet: false, count: 1 }
+            { name: "Hose Bib", desc: "Exterior Valve (No Drain)", fu: 2.5, dfu: 0.0, toilet: false, count: 1 }
         ];
 
         function update() {

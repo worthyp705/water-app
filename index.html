@@ -2,66 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Upload a 180x180 square logo named 'app-icon.png' to your GitHub repo to set the home screen icon -->
+    <link rel="apple-touch-icon" href="app-icon.png">
     <title>OBC Plumbing Sizer</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f2f2f7; margin: 0; padding: 16px; color: #000; }
-        .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .header { text-align: center; margin-bottom: 16px; }
-        .header h1 { margin: 0; font-size: 22px; }
-        .header p { margin: 4px 0 0; font-size: 14px; color: #8e8e93; }
-        input[type="text"], select { font-size: 16px; padding: 10px; border-radius: 8px; border: 1px solid #c7c7cc; background: #f2f2f7; width: 100%; margin-top: 8px; outline: none; box-sizing: border-box; -webkit-appearance: none; }
-        .summary-grid { display: flex; justify-content: space-between; text-align: center; margin-top: 12px; flex-wrap: wrap; }
-        .summary-box { width: 48%; background: #f9f9eb; padding: 12px 0; border-radius: 8px; margin-bottom: 8px; }
-        .val { font-size: 22px; font-weight: bold; }
-        .fu-val { color: #007aff; }
+        :root {
+            --bg-color: #f4f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1c1c1e;
+            --text-muted: #8e8e93;
+            --primary-blue: #007aff;
+            --border-color: #e5e5ea;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); margin: 0; padding: 16px; color: var(--text-main); -webkit-font-smoothing: antialiased; }
+        
+        /* Premium Header */
+        .header-card { background: linear-gradient(135deg, #002855, #004080); color: white; padding: 24px 16px; border-radius: 16px; margin-bottom: 20px; text-align: center; box-shadow: 0 8px 24px rgba(0,40,85,0.15); }
+        .header-card h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        .header-card p { margin: 8px 0 0; font-size: 14px; color: #a1c2ea; font-weight: 500; }
+        
+        /* Standard Cards */
+        .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
+        .title { font-weight: 600; font-size: 17px; margin-bottom: 4px; letter-spacing: -0.3px; }
+        .sub { font-size: 13px; color: var(--text-muted); }
+        
+        /* Inputs & Selects */
+        input[type="text"], select { font-family: inherit; font-size: 16px; padding: 14px; border-radius: 12px; border: 1px solid #d1d1d6; background: #fafafa; width: 100%; margin-top: 10px; outline: none; box-sizing: border-box; -webkit-appearance: none; transition: all 0.2s ease; }
+        input[type="text"]:focus, select:focus { border-color: var(--primary-blue); background: #fff; box-shadow: 0 0 0 3px rgba(0,122,255,0.15); }
+        
+        /* Summary Grid */
+        .summary-grid { display: flex; justify-content: space-between; text-align: center; margin-top: 16px; flex-wrap: wrap; gap: 10px; }
+        .summary-box { width: calc(50% - 5px); background: #f8f9fa; padding: 16px 0; border-radius: 12px; border: 1px solid var(--border-color); }
+        .val { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        .fu-val { color: var(--primary-blue); }
         .dfu-val { color: #af52de; }
         .pipe-val { color: #34c759; }
         .vent-val { color: #ff9500; }
-        .lbl { font-size: 11px; color: #8e8e93; text-transform: uppercase; margin-top: 4px; font-weight: 600; }
-        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e5e5ea; }
-        .row:last-child { border-bottom: none; }
-        .title { font-weight: 500; font-size: 16px; margin-bottom: 2px; }
-        .sub { font-size: 12px; color: #8e8e93; }
-        .btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #007aff; background: #fff; color: #007aff; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding-bottom: 3px; box-sizing: border-box; }
-        .cnt { width: 26px; text-align: center; font-size: 16px; font-weight: 600; display: inline-block; }
-        .warning-box { margin-top: 12px; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; text-align: center; }
-        .ok { background: #e5fbe9; color: #1e8334; }
-        .alert { background: #ffebee; color: #d32f2f; }
-        .control-group { display: flex; align-items: center; }
-        .action-btn { background: #007aff; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px; margin-bottom: 24px; }
-        .disclaimer { font-size: 12px; color: #666; line-height: 1.5; }
-        .disclaimer-title { font-weight: bold; color: #d32f2f; margin-bottom: 6px; font-size: 13px; }
+        .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 0.5px; }
         
-        /* Print Styles for PDF Generation */
+        /* List Items */
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-color); }
+        .row:last-child { border-bottom: none; padding-bottom: 0; }
+        .row:first-of-type { padding-top: 8px; }
+        
+        /* Buttons */
+        .control-group { display: flex; align-items: center; background: #f0f0f5; border-radius: 20px; padding: 4px; }
+        .btn { width: 36px; height: 36px; border-radius: 18px; border: none; background: transparent; color: var(--primary-blue); font-size: 22px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; padding-bottom: 3px; }
+        .btn:active { background: #e0e0eb; }
+        .cnt { width: 32px; text-align: center; font-size: 17px; font-weight: 600; display: inline-block; }
+        
+        .action-btn { background: var(--primary-blue); color: white; border: none; padding: 16px; width: 100%; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-bottom: 32px; box-shadow: 0 4px 14px rgba(0,122,255,0.3); transition: transform 0.1s; }
+        .action-btn:active { transform: scale(0.98); background: #005bb5; }
+        
+        /* Status & Disclaimers */
+        .warning-box { margin-top: 16px; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 500; text-align: center; line-height: 1.4; }
+        .ok { background: #e5fbe9; color: #196b2a; border: 1px solid #cce8d3; }
+        .alert { background: #ffebee; color: #b71c1c; border: 1px solid #ffcdd2; }
+        .disclaimer { font-size: 13px; color: #666; line-height: 1.5; background: transparent; box-shadow: none; border: none; padding: 0 8px; margin-top: 8px; }
+        .disclaimer-title { font-weight: 700; color: #1c1c1e; margin-bottom: 6px; font-size: 14px; }
+        
+        /* Print Styles */
         @media print {
             body { background: white; padding: 0; color: black; }
-            .card { box-shadow: none; border: 1px solid #000; margin-bottom: 12px; page-break-inside: avoid; }
+            .header-card { background: white; color: black; box-shadow: none; border-bottom: 2px solid #000; border-radius: 0; padding: 0 0 16px 0; }
+            .header-card p { color: #333; }
+            .card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 16px; page-break-inside: avoid; }
             .btn, select, .action-btn, .control-group { display: none !important; }
-            input[type="text"] { border: none; background: transparent; padding: 0; font-weight: bold; font-size: 18px; margin-top: 4px; }
+            input[type="text"] { border: none; background: transparent; padding: 0; font-weight: bold; font-size: 18px; margin-top: 4px; box-shadow: none; }
             .summary-box { background: transparent; border: 1px solid #ccc; }
-            .cnt { display: inline-block; width: auto; font-size: 16px; }
-            .cnt::before { content: "Qty: "; font-weight: normal; }
-            .warning-box { border: 1px solid #000; }
+            .cnt { display: inline-block; width: auto; font-size: 16px; margin-top: 8px; }
+            .cnt::before { content: "Installed Qty: "; font-weight: normal; color: #666; }
+            .warning-box { border: 1px solid #000; background: transparent; color: #000; }
+            .disclaimer { border: 1px solid #eee; padding: 12px; }
         }
     </style>
 </head>
 <body>
     
-    <div class="header">
+    <div class="header-card">
         <h1>OBC Plumbing Sizer</h1>
-        <p>Water Supply, Drainage & Venting</p>
+        <p>Water Supply, Drainage & Venting Calculator</p>
     </div>
 
     <!-- Project Details -->
     <div class="card">
         <div class="title">Project Details</div>
-        <input type="text" id="project-name" placeholder="Enter Project Name or Address (e.g., 1117 Purdy Rd)">
+        <input type="text" id="project-name" placeholder="Project Name or Address (e.g., 1117 Purdy Rd)">
         
-        <div style="margin-top: 16px;" class="title no-print">Incoming Lake/Well Line</div>
-        <select id="suction-size" onchange="update()">
+        <div style="margin-top: 20px;" class="title no-print">Incoming Water Service Line</div>
+        <div class="sub no-print">Select the main suction or well line size:</div>
+        <select id="suction-size" class="no-print" onchange="update()">
             <option value="0.75">3/4" (NPS 3/4)</option>
             <option value="1.0">1" (NPS 1)</option>
             <option value="1.25" selected>1 1/4" (NPS 1 1/4)</option>
@@ -72,7 +105,7 @@
 
     <!-- Master Summary Dashboard -->
     <div class="card">
-        <div class="title" style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 8px;">System Sizing Report</div>
+        <div class="title" style="text-align: center; margin-bottom: 8px;">System Sizing Report</div>
         
         <div class="summary-grid">
             <div class="summary-box">
@@ -93,9 +126,10 @@
             </div>
         </div>
         
-        <div class="row" style="padding-bottom: 0; justify-content: center;">
-            <div style="text-align: center;">
-                <div class="title" style="font-size: 14px; margin-top:8px;">Main Vent Stack Required: <span id="vent-size" style="font-weight:bold; color: #ff9500;">2"</span></div>
+        <div class="row" style="padding-bottom: 0; justify-content: center; border: none; margin-top: 8px;">
+            <div style="text-align: center; background: #f8f9fa; padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border-color); width: 100%;">
+                <div class="lbl" style="margin-top: 0; margin-bottom: 4px;">Main Vent Stack Required</div>
+                <div id="vent-size" class="val" style="color: #ff9500; font-size: 20px;">2"</div>
             </div>
         </div>
 
@@ -108,24 +142,22 @@
     <!-- Code Compliance Disclaimer -->
     <div class="card disclaimer">
         <div class="disclaimer-title">Design Assumptions & Code Compliance</div>
-        <div>Calculations are based strictly on prescriptive tables from <b>Part 7 of the Ontario Building Code (OBC)</b>: Tables 7.6.3.2.A, 7.6.3.4, 7.4.9.3, and 7.4.10.8.</div>
-        <br>
-        <div><b>Important Constraints:</b> Sizing limits assume standard residential water pressure (minimum <b>30 psi / 200 kPa</b>) and a main service pipe length under <b>90 meters (300 ft)</b>. Systems exceeding these distances or operating below 30 psi require a detailed engineering design and cannot rely on standard prescriptive sizing.</div>
+        <div style="margin-bottom: 8px;">Calculations are based strictly on prescriptive tables from <b>Part 7 of the Ontario Building Code (OBC)</b>: Tables 7.6.3.2.A, 7.6.3.4, 7.4.9.3, and 7.4.10.8.</div>
+        <div><b>Important Constraints:</b> Sizing limits assume standard residential water pressure (minimum <b>30 psi / 200 kPa</b>) and a main service pipe length under <b>90 meters (300 ft)</b>. Systems exceeding these parameters require a detailed engineering design.</div>
     </div>
 
     <button class="action-btn no-print" onclick="window.print()">Generate PDF Report</button>
 
     <script>
-        // Water FU (Supply) and Drainage FU (DFU) per OBC
         const fixtures = [
             { name: "Full Bath Group", desc: "Toilet, Sink, Tub/Shower", fu: 3.6, dfu: 6.0, toilet: true, count: 0 },
             { name: "Half Bath Group", desc: "Toilet & Sink Only", fu: 2.6, dfu: 5.0, toilet: true, count: 0 },
-            { name: "Toilet (≤ 6 LPF)", desc: "Individual", fu: 2.2, dfu: 4.0, toilet: true, count: 1 },
-            { name: "Bathtub or Shower", desc: "Individual", fu: 1.4, dfu: 1.5, toilet: false, count: 1 },
-            { name: "Bathroom Sink", desc: "Lavatory", fu: 0.7, dfu: 1.0, toilet: false, count: 1 },
-            { name: "Kitchen Sink", desc: "Standard", fu: 1.4, dfu: 1.5, toilet: false, count: 1 },
-            { name: "Clothes Washer", desc: "Laundry", fu: 1.4, dfu: 2.0, toilet: false, count: 0 },
-            { name: "Dishwasher", desc: "Kitchen", fu: 1.4, dfu: 1.5, toilet: false, count: 0 },
+            { name: "Toilet (≤ 6 LPF)", desc: "Individual Fixture", fu: 2.2, dfu: 4.0, toilet: true, count: 1 },
+            { name: "Bathtub or Shower", desc: "Individual Fixture", fu: 1.4, dfu: 1.5, toilet: false, count: 1 },
+            { name: "Bathroom Sink", desc: "Individual (Lavatory)", fu: 0.7, dfu: 1.0, toilet: false, count: 1 },
+            { name: "Kitchen Sink", desc: "Standard Kitchen", fu: 1.4, dfu: 1.5, toilet: false, count: 1 },
+            { name: "Clothes Washer", desc: "Laundry Box", fu: 1.4, dfu: 2.0, toilet: false, count: 0 },
+            { name: "Dishwasher", desc: "Kitchen Appliance", fu: 1.4, dfu: 1.5, toilet: false, count: 0 },
             { name: "Hose Bibb", desc: "Exterior Valve (No Drain)", fu: 2.5, dfu: 0.0, toilet: false, count: 1 }
         ];
 
@@ -135,48 +167,47 @@
             let hasToilet = false;
 
             const container = document.getElementById("fixture-list");
-            container.innerHTML = "<div class='title' style='margin-bottom: 8px;'>Plumbing Fixtures</div>";
+            container.innerHTML = "<div class='title' style='margin-bottom: 4px;'>Plumbing Fixtures</div><div class='sub' style='margin-bottom: 12px;'>Adjust counts to calculate system load</div>";
             
             fixtures.forEach((item, idx) => {
                 totalFU += item.count * item.fu;
                 totalDFU += item.count * item.dfu;
                 if (item.count > 0 && item.toilet) hasToilet = true;
 
-                // Only show items with count > 0 in print mode, but show all in app mode
                 container.innerHTML += `
                     <div class="row" style="${item.count === 0 ? '@media print { display: none; }' : ''}">
                         <div>
                             <div class="title">${item.name}</div>
                             <div class="sub">${item.desc} • ${item.fu} FU / ${item.dfu} DFU</div>
                         </div>
-                        <div class="control-group">
-                            <button class="btn no-print" onclick="change(${idx}, -1)">-</button>
+                        <div class="control-group no-print">
+                            <button class="btn" onclick="change(${idx}, -1)">-</button>
                             <span class="cnt">${item.count}</span>
-                            <button class="btn no-print" onclick="change(${idx}, 1)">+</button>
+                            <button class="btn" onclick="change(${idx}, 1)">+</button>
                         </div>
+                        <div class="cnt" style="display:none; @media print { display:block; margin:0; }">${item.count}</div>
                     </div>`;
             });
 
-            // Update Summaries
             document.getElementById("total-fu").innerText = totalFU.toFixed(1);
             document.getElementById("total-dfu").innerText = totalDFU.toFixed(1);
             
-            // 1. Water Supply Sizing
+            // Water Supply
             let waterStr = "3/4\"";
             let waterNum = 0.75;
             if (totalFU > 26 && totalFU <= 41) { waterStr = "1\""; waterNum = 1.0; } 
             else if (totalFU > 41) { waterStr = "1 1/4\""; waterNum = 1.25; }
             document.getElementById("pipe-size").innerText = waterStr;
 
-            // 2. Building Drain Sizing (ABS)
+            // Drain Sizing
             let drainStr = "3\"";
-            if (totalDFU > 27) { drainStr = "4\""; } // Under OBC, > 27 DFU jumps from 3" to 4" main
-            if (!hasToilet && totalDFU <= 6) { drainStr = "2\""; } // Tiny cabins with no toilet
+            if (totalDFU > 27) { drainStr = "4\""; } 
+            if (!hasToilet && totalDFU <= 6) { drainStr = "2\""; } 
             document.getElementById("drain-size").innerText = drainStr;
 
-            // 3. Vent Sizing
+            // Vent Sizing
             let ventStr = "2\"";
-            if (hasToilet) { ventStr = "3\" (Min. Stack)"; } // Must have a 3" vent going through roof if toilet is present
+            if (hasToilet) { ventStr = "3\" (Min. Stack)"; } 
             document.getElementById("vent-size").innerText = ventStr;
 
             // Warning Checks
@@ -187,10 +218,10 @@
 
             if (suctionVal < waterNum) {
                 statusMsg.className = "warning-box alert";
-                statusMsg.innerHTML = `⚠️ <b>Bottleneck:</b> ${suctionText} incoming supply is smaller than the required ${waterStr} house main.`;
+                statusMsg.innerHTML = `⚠️️ <b>Bottleneck Warning:</b> Your ${suctionText} incoming supply is smaller than the required ${waterStr} house main.`;
             } else {
                 statusMsg.className = "warning-box ok";
-                statusMsg.innerHTML = `✅ <b>System Valid:</b> Supply and Drainage sizing conforms to OBC Part 7 limits.`;
+                statusMsg.innerHTML = `✅ <b>System Valid:</b> Supply and drainage capacities conform to OBC parameters.`;
             }
         }
 

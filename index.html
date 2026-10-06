@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Meta tags to force browser to stop caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="apple-touch-icon" href="app-icon.png">
     <title>FlowCode Pro</title>
     <style>
@@ -114,7 +118,8 @@
     
     <div class="header-card no-print">
         <h1>FlowCode Pro</h1>
-        <p>Master Plumbing & Estimating Suite</p>
+        <!-- VISUAL INDICATOR: If you see this, the cache is cleared! -->
+        <p>OBC Sizing & Estimating Suite</p>
     </div>
 
     <!-- Print Header -->
@@ -123,7 +128,7 @@
         <p>Job Worksheet & Sizing Report</p>
     </div>
 
-    <!-- TAB 1: SYSTEM SIZING (NOW DEFAULT) -->
+    <!-- TAB 1: SYSTEM SIZING (DEFAULT) -->
     <div id="tab-sizing" class="tab-content active">
         <div class="card">
             <div class="title">OBC Load Calculator (Water & Drain)</div>
@@ -156,7 +161,6 @@
                 </div>
             </div>
 
-            <!-- Bottleneck Warning -->
             <div id="status-message" style="margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; text-align: center;"></div>
         </div>
         
@@ -303,7 +307,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM TAB BAR (SWAPPED SIZING & QUOTE) -->
+    <!-- BOTTOM TAB BAR (SIZING IS FIRST) -->
     <div class="bottom-nav no-print">
         <div class="nav-item active" onclick="switchTab('tab-sizing', this)">
             <span class="nav-icon">📐</span>
@@ -324,6 +328,7 @@
     </div>
 
     <script>
+        // Tab system logic
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
@@ -495,7 +500,13 @@
             document.getElementById("off-result").innerText = (gap * ang).toFixed(1) + '"';
         }
 
-        initLists(); updateSystem(); updateQuote(); updateTools();
+        // Initialize App
+        window.onload = function() {
+            initLists(); 
+            updateSystem(); 
+            updateQuote(); 
+            updateTools();
+        };
     </script>
 </body>
 </html>
